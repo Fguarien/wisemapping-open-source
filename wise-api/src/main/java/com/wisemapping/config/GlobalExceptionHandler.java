@@ -140,6 +140,38 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
+    @ExceptionHandler(CopilotDisabledException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public RestErrors handleCopilotDisabled(@NotNull CopilotDisabledException ex) {
+        final Locale locale = LocaleContextHolder.getLocale();
+        return new RestErrors(ex.getMessage(messageSource, locale), ex.getSeverity(), ex.getTechInfo());
+    }
+
+    @ExceptionHandler(CopilotUnavailableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ResponseBody
+    public RestErrors handleCopilotUnavailable(@NotNull CopilotUnavailableException ex) {
+        final Locale locale = LocaleContextHolder.getLocale();
+        return new RestErrors(ex.getMessage(messageSource, locale), ex.getSeverity(), ex.getTechInfo());
+    }
+
+    @ExceptionHandler(CopilotRoutingMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    @ResponseBody
+    public RestErrors handleCopilotRoutingMismatch(@NotNull CopilotRoutingMismatchException ex) {
+        final Locale locale = LocaleContextHolder.getLocale();
+        return new RestErrors(ex.getMessage(messageSource, locale), ex.getSeverity(), ex.getTechInfo());
+    }
+
+    @ExceptionHandler(CopilotInvalidResponseException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    @ResponseBody
+    public RestErrors handleCopilotInvalidResponse(@NotNull CopilotInvalidResponseException ex) {
+        final Locale locale = LocaleContextHolder.getLocale();
+        return new RestErrors(ex.getMessage(messageSource, locale), ex.getSeverity(), ex.getTechInfo());
+    }
+
     @ExceptionHandler(RequestNotPermitted.class)
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
     @ResponseBody

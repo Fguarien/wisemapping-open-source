@@ -18,11 +18,12 @@
 
 package com.wisemapping.rest.model;
 
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 
 @JsonAutoDetect(
@@ -42,6 +43,8 @@ public class RestAppConfig {
     private boolean oidcOauth2Enabled;
     private String oidcOauth2Label;
     private boolean registrationEnabled;
+    private boolean copilotEnabled;
+    private List<RestCopilotModel> copilotModels = List.of();
     private boolean recaptcha2Enabled;
     private String recaptcha2SiteKey;
     private String analyticsAccount;
@@ -116,6 +119,22 @@ public class RestAppConfig {
         this.oidcOauth2Label = oidcOauth2Label;
     }
 
+    public boolean isCopilotEnabled() {
+        return copilotEnabled;
+    }
+
+    public void setCopilotEnabled(boolean copilotEnabled) {
+        this.copilotEnabled = copilotEnabled;
+    }
+
+    public List<RestCopilotModel> getCopilotModels() {
+        return copilotModels;
+    }
+
+    public void setCopilotModels(List<RestCopilotModel> copilotModels) {
+        this.copilotModels = copilotModels;
+    }
+
     public boolean isRegistrationEnabled() {
         return registrationEnabled;
     }
@@ -175,6 +194,8 @@ public class RestAppConfig {
         private boolean oidcOauth2Enabled;
         private String oidcOauth2Label;
         private boolean registrationEnabled;
+        private boolean copilotEnabled;
+        private List<RestCopilotModel> copilotModels = List.of();
         private boolean isCatchaEnabled = false;
         private String captchaSiteKey;
         private String analyticsAccount;
@@ -240,6 +261,16 @@ public class RestAppConfig {
             return this;
         }
 
+        public RestAppConfigBuilder setCopilotEnabled(boolean copilotEnabled) {
+            this.copilotEnabled = copilotEnabled;
+            return this;
+        }
+
+        public RestAppConfigBuilder setCopilotModels(@NotNull List<RestCopilotModel> copilotModels) {
+            this.copilotModels = copilotModels;
+            return this;
+        }
+
         public RestAppConfigBuilder setRegistrationEnabled(@NotNull boolean registrationEnabled) {
             this.registrationEnabled = registrationEnabled;
             return this;
@@ -265,6 +296,8 @@ public class RestAppConfig {
             result.uiBaseUrl = uiBaseUrl;
             result.apiBaseUrl = apiBaseUrl;
             result.registrationEnabled = registrationEnabled;
+            result.copilotEnabled = copilotEnabled;
+            result.copilotModels = copilotModels;
             result.analyticsAccount = analyticsAccount;
             result.jwtExpirationMin = jwtExpirationMin;
             return result;

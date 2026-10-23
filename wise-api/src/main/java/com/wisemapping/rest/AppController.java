@@ -19,7 +19,10 @@
 package com.wisemapping.rest;
 
 import com.wisemapping.rest.model.RestAppConfig;
+import com.wisemapping.rest.model.RestCopilotModel;
+import com.wisemapping.service.copilot.CopilotService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -28,12 +31,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/restful/app")
 public class AppController {
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    @Qualifier("copilotService")
+    private CopilotService copilotService;
 
     @Value("${app.registration.enabled:true}")
     private Boolean isRegistrationEnabled;
@@ -77,6 +86,10 @@ public class AppController {
                 .setOidcOauth2Enabled(oidcEnabled)
                 .setAnalyticsAccount(analyticsAccount)
                 .setRegistrationEnabled(isRegistrationEnabled)
+                .setCopilotEnabled(copilotService.isActive())
+                .setCopilotModels(copilotService.isActive()
+                        ? copilotService.getModels().stream().map(RestCopilotModel::new).toList()
+                        : List.of())
                 .setJwtExpirationMin(jwtExpirationMin);
         
         // Only set OAuth2 URLs if providers are configured

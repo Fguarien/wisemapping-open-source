@@ -45,6 +45,7 @@ Key namespaces (read `application.yml` before changing behavior):
 - `spring.security.oauth2.client` — Google/Facebook OAuth2, plus a generic OpenID Connect provider under the registration id `oidc` (see `doc/oidc/README.md`); client IDs/secrets are expected to be supplied via overlay.
 - `spring.ldap` + `app.security.ldap` — LDAP auth (see `doc/ldap/README.md`). Disabled by default.
 - `app.jwt` — JWT signing key + expiration (used by `JwtTokenUtil`, `JwtAuthController`).
+- `app.ai.copilot` — built-in AI copilot: OpenAI-compatible endpoint, model list with their locality (local / external), routing check (see `doc/ai-copilot/README.md`). Disabled by default.
 - `app.site.*` — base URLs the API embeds in emails and OAuth redirects.
 - `management.*` — Actuator, Prometheus, OpenTelemetry. Spam detection, history cleanup, and inactive-user/inactive-map cleanup are scheduled jobs configured here too.
 
@@ -133,4 +134,5 @@ To ensure cross-platform consistency and resolve encoding/case-sensitivity issue
 
 - `doc/api-documentation/` — REST API reference + backend specifics (telemetry, OpenAPI).
 - `doc/oidc/README.md` — generic OpenID Connect login (Keycloak, Authentik, Okta...).
+- `doc/ai-copilot/README.md` — built-in AI copilot (OpenAI-compatible endpoint, model locality, routing check).
 - `doc/ldap/README.md` — LDAP setup. The `app.security.ldap` block in `application.yml` is heavily commented and is the source of truth.

@@ -204,6 +204,10 @@ resilience4j:
         limitForPeriod: 20
         limitRefreshPeriod: 1s
         timeoutDuration: 0
+      copilotLimiter:
+        limitForPeriod: 10      # copilot generations accepted per window, all users together
+        limitRefreshPeriod: 1m
+        timeoutDuration: 0
       passwordResetLimiter:
         limitForPeriod: 50      # max 50 password reset requests per window
         limitRefreshPeriod: 1m  # 1-minute sliding window
@@ -244,6 +248,41 @@ app:
   # Admin account with super admin permissions on the API.
   admin:
     user: admin@wisemapping.org
+  # Built-in AI copilot: turns a prompt into a new map through an OpenAI-compatible
+  # chat completions endpoint (OpenAI, Ollama, vLLM, LiteLLM...). Disabled by default: the
+  # "AI Copilot" button then opens the hosted ChatGPT copilot. See doc/ai-copilot/README.md
+  # for the environment variable names (relaxed binding drops the dashes: APP_AI_COPILOT_APIKEY).
+  ai:
+    copilot:
+      enabled: false
+      base-url: ""            # e.g. https://api.openai.com/v1 or http://litellm:4000/v1
+      api-key: ""             # bearer token, supply it through the environment, never here
+      # Models offered to users, the first one is the default. locality is shown to users:
+      # local = runs on your infrastructure, external = prompts are sent to a third party.
+      # served-match: regular expression the "model" field of the completion must fully match;
+      # a model declared local that is answered by anything else is rejected (no map created).
+      models: []
+      #  - id: gpt-4o-mini
+      #    label: GPT-4o mini
+      #    locality: external
+      #    provider: OpenAI
+      #    served-match: "gpt-4o-mini.*"
+      #  - id: qwen2.5:7b
+      #    label: Qwen 2.5 (on premises)
+      #    locality: local
+      #    served-match: "qwen2\\.5:7b"
+      # Single-model form, used only when models is empty.
+      model: ""
+      locality: external
+      provider: ""
+      served-match: ""
+      # LiteLLM only: fail instead of silently serving a fallback model. OpenAI rejects it.
+      disable-fallbacks: false
+      timeout-seconds: 90
+      max-prompt-length: 2000
+      max-topics: 60
+      max-depth: 3
+      temperature: 0.3
   # ChatGPT OAuth integration configuration
   chatgpt:
     ai-base-url: https://ai.wisemapping.com
