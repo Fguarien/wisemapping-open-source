@@ -10,6 +10,10 @@ on:
 env:
   IMAGE_NAME: registry.digitalocean.com/wise-registry/wisemapping/wisemapping-api
 
+# Moindre privilège pour GITHUB_TOKEN (OpenSSF Scorecard Token-Permissions).
+permissions:
+  contents: read
+
 jobs:
   # The API image only unpacks Alpine packages and copies an
   # architecture-neutral JAR, so cross-building both platforms in a single job
