@@ -14,6 +14,10 @@ on:
 env:
   IMAGE_NAME: wisemapping/wisemapping
 
+# Moindre privilège pour GITHUB_TOKEN (OpenSSF Scorecard Token-Permissions).
+permissions:
+  contents: read
+
 jobs:
   # The app image compiles the backend with Maven and the frontend with
   # webpack inside the build. Building arm64 under QEMU emulation is far too
