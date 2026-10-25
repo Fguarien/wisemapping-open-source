@@ -23,6 +23,11 @@ on:
         required: false
         default: 'main'
         type: string
+# Moindre privilège pour GITHUB_TOKEN (OpenSSF Scorecard Token-Permissions).
+# tag-release garde contents: write au niveau du job (il pousse un tag)
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
