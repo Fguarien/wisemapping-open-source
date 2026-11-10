@@ -50,7 +50,7 @@ class AuthenticationProviderTest {
     @Test
     void testAuthenticateWithOidcConfigured_ShouldThrowLocalLoginDisabledException() {
         final LocalLoginPolicy oidcConfigured = mock(LocalLoginPolicy.class);
-        when(oidcConfigured.isLocalLoginEnabled()).thenReturn(false);
+        when(oidcConfigured.isLocalLoginAllowedFor("test@example.com")).thenReturn(false);
         authenticationProvider.setLocalLoginPolicy(oidcConfigured);
 
         final UsernamePasswordAuthenticationToken auth =

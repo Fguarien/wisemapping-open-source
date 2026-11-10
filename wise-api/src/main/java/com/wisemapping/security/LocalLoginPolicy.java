@@ -40,14 +40,47 @@ public class LocalLoginPolicy {
     @Value("${spring.security.oauth2.client.registration.oidc.client-id:}")
     private String oidcClientId;
 
+    /**
+     * Comma-separated emails of local (database) accounts that may still sign in with a password while
+     * OpenID Connect is configured — service accounts that cannot follow a browser redirect (an
+     * automation bot calling the REST API). Empty by default: upstream behaviour, every local login
+     * is refused. Registration and password reset stay disabled whatever this list holds.
+     */
+    @Value("${app.login.local.allowed-accounts:}")
+    private String allowedAccounts;
+
     @PostConstruct
     void logPolicy() {
         if (!isLocalLoginEnabled()) {
             logger.info("OpenID Connect is configured: email/password login, registration and password reset are disabled for local accounts");
+            if (allowedAccounts != null && !allowedAccounts.isBlank()) {
+                logger.info("Local password login kept for {} listed service account(s) (app.login.local.allowed-accounts)",
+                        allowedAccounts.split(",").length);
+            }
         }
     }
 
     public boolean isLocalLoginEnabled() {
         return oidcClientId == null || oidcClientId.isBlank();
+    }
+
+    /**
+     * Whether this account may sign in with email and password: always without OpenID Connect,
+     * otherwise only when listed in {@code app.login.local.allowed-accounts} (case-insensitive).
+     */
+    public boolean isLocalLoginAllowedFor(String email) {
+        if (isLocalLoginEnabled()) {
+            return true;
+        }
+        if (email == null || email.isBlank() || allowedAccounts == null || allowedAccounts.isBlank()) {
+            return false;
+        }
+        final String candidate = email.trim();
+        for (String allowed : allowedAccounts.split(",")) {
+            if (!allowed.isBlank() && allowed.trim().equalsIgnoreCase(candidate)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

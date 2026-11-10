@@ -47,14 +47,15 @@ public class AuthenticationProvider implements org.springframework.security.auth
     @Override()
     public Authentication authenticate(@NotNull final Authentication auth) throws AuthenticationException {
 
-        // With OpenID Connect configured, local accounts sign in only through the identity provider.
-        // Checked here rather than in the controller so HTTP Basic is covered too.
-        if (!localLoginPolicy.isLocalLoginEnabled()) {
-            throw new LocalLoginDisabledException("Local login is disabled while OpenID Connect is configured");
-        }
-
         // All your user authentication needs
         final String email = auth.getName();
+
+        // With OpenID Connect configured, local accounts sign in only through the identity provider,
+        // except the service accounts listed in app.login.local.allowed-accounts.
+        // Checked here rather than in the controller so HTTP Basic is covered too.
+        if (!localLoginPolicy.isLocalLoginAllowedFor(email)) {
+            throw new LocalLoginDisabledException("Local login is disabled while OpenID Connect is configured");
+        }
 
         final UserDetails userDetails = getUserDetailsService().loadUserByUsername(email);
         final Account user = userDetails.getUser();
